@@ -1,2 +1,8 @@
 pandas
 numpy
+streamlit 
+sentence-transformers 
+faiss-cpu
+matplotlib
+seaborn
+ipykernel
