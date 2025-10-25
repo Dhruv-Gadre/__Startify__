@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evaluate | Startify</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dark-theme">
+  <header class="nav">
+    <div class="logo">Startify</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="evaluate.html" class="active">Evaluate</a>
+    </nav>
+  </header>
+
+  <div class="form-container">
+    <h1 class="headline center">Tell Us About Your Startup</h1>
+    
+    <div id="error-box" class="error-message hidden"></div>
+    
+    <form class="glass-form" id="startup-form">
+      <label for="user-idea">A. Describe your startup idea:</label>
+      <textarea id="user-idea" rows="5" placeholder="e.g., 'A mobile app that uses AI to detect plant diseases for farmers'"></textarea>
+
+      <div class="dual-inputs">
+        <div>
+          <label for="user-city">B. What city are you based in?</label>
+          <input type="text" id="user-city" placeholder="e.g., New York" />
+        </div>
+        <div>
+          <label for="founding-year">C. What is your planned founding year?</label>
+          <input type="number" id="founding-year" min="2010" max="2030" step="1" />
+        </div>
+      </div>
+
+      <button type="submit" class="btn-glow" id="analyze-button">Analyze My Idea</button>
+      
+      <div id="spinner" class="spinner hidden">
+        Analyzing...
+      </div>
+    </form>
+    
+    <div id="results-section" class="result hidden">
+      
+      <h2>1. Your Startup Profile</h2>
+      <div id="profile-section" class="metric-grid">
+        </div>
+      
+      <hr class="divider">
+      
+      <h2>2. AI 'Copycat' Analysis</h2>
+      <div id="ai-analysis-section">
+        </div>
+      
+      <hr class="divider">
+
+      <h2>3. Top Similar Startups Found</h2>
+      <div id="similar-startups-section">
+        </div>
+      
+      <hr class="divider">
+
+      <h2>4. Initial Funding Analysis</h2>
+      <div id="funding-analysis-section" class="metric-grid">
+         </div>
+
+      <hr class="divider">
+
+      <h2>5. Extra Analysis</h2>
+      <div id="extra-prediction-section">
+         </div>
+
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>© 2025 Startify | AI Startup Evaluation Platform</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
