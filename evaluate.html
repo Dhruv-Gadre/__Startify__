@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Startify | Evaluate</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dark-theme">
+  <header class="nav">
+    <div class="logo">Startify</div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="#" class="active">Evaluate</a>
+    </nav>
+  </header>
+
+  <main class="form-container">
+    <h2 class="headline center">Evaluate your <span class="accent">idea</span></h2>
+    <p class="subtext center">Fill out the form below to analyze your startup potential.</p>
+
+    <form id="ideaForm" class="glass-form">
+      <label>Description</label>
+      <textarea id="description" rows="4" placeholder="Describe your startup idea..." required></textarea>
+
+      <label>Field</label>
+      <select id="field" required>
+        <option value="">Select Field</option>
+        <option value="FinTech">FinTech</option>
+        <option value="EdTech">EdTech</option>
+        <option value="HealthTech">HealthTech</option>
+        <option value="AgriTech">AgriTech</option>
+        <option value="E-commerce">E-commerce</option>
+      </select>
+
+      <div class="dual-inputs">
+        <div>
+          <label>City</label>
+          <input type="text" id="city" placeholder="Enter city" required />
+        </div>
+        <div>
+          <label>Founding Year</label>
+          <input type="number" id="year" min="1900" max="2100" required />
+        </div>
+      </div>
+
+      <button type="submit" class="btn-glow">Evaluate →</button>
+    </form>
+
+    <section id="resultSection" class="result hidden">
+      <h3 class="headline">Results</h3>
+      <p id="similarityMsg" class="accent"></p>
+      <div id="predictionSection" class="hidden">
+        <p><strong>Funding Prediction:</strong> <span id="fundingPred"></span></p>
+        <p><strong>Confidence:</strong> <span id="confidenceRate"></span>%</p>
+        <div id="reportContent"></div>
+      </div>
+      <div id="tooSimilarSection" class="hidden">
+        <p class="warning-text">Your idea is highly similar to existing startups. Consider refining your USP.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2025 Startify | AI Startup Evaluation Platform</p>
+  </footer>
+
+  <script>
+const form = document.getElementById('ideaForm');
+const resultSection = document.getElementById('resultSection');
+const similarityMsg = document.getElementById('similarityMsg');
+const predictionSection = document.getElementById('predictionSection');
+const tooSimilarSection = document.getElementById('tooSimilarSection');
+const fundingPred = document.getElementById('fundingPred');
+const confidenceRate = document.getElementById('confidenceRate');
+const reportContent = document.getElementById('reportContent');
+
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  resultSection.classList.remove('hidden');
+  similarityMsg.textContent = 'Analyzing your idea...';
+  predictionSection.classList.add('hidden');
+  tooSimilarSection.classList.add('hidden');
+
+  resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  try {
+    const response = await fetch("http://127.0.0.1:5000/evaluate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ description: document.getElementById("description").value })
+    });
+
+    if (!response.ok) throw new Error("Server returned " + response.status);
+
+    const result = await response.json();
+
+    if (result.error) {
+      similarityMsg.textContent = "Error: " + result.error;
+      return;
+    }
+
+    similarityMsg.textContent = "Top Similar Startups Found:";
+    predictionSection.classList.remove("hidden");
+
+    reportContent.innerHTML = result.matches
+      .map(
+        (m) => `
+        <div class="result-card">
+          <h4>${m.rank}. ${m.company || 'N/A'}</h4>
+          <p><strong>Description:</strong> ${m.description || 'No description available'}</p>
+          <p><strong>Funding:</strong> $${(m.funding || 0).toLocaleString()}</p>
+          <p><strong>Status:</strong> ${m.failure_status || 'Unknown'}</p>
+        </div>
+      `
+      )
+      .join("");
+
+    fundingPred.textContent = `$${(result.average_funding || 0).toLocaleString()}`;
+    confidenceRate.textContent = `${result.funded_count} of ${result.matches.length} startups funded`;
+
+    tooSimilarSection.classList.add("hidden");
+
+  } catch (err) {
+    similarityMsg.textContent = "Error connecting to server: " + err.message;
+  }
+});
+</script>
+
+</body>
+</html>
