@@ -6,3 +6,11 @@ faiss-cpu
 matplotlib
 seaborn
 ipykernel
+requests
+fastapi
+uvicorn
+pandas
+sentence-transformers
+faiss-cpu
+numpy
+python-multipart
