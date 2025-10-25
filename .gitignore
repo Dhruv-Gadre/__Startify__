@@ -1,1 +1,3 @@
 ai_env
+# Ignore Python virtual environment
+venv/
