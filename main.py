@@ -9,6 +9,14 @@ import numpy as np
 import datetime
 import logging
 
+
+try:
+    from model_client import predict_funding
+except ImportError:
+    print("Error: 'model_clients.py' not found.")
+    def predict_funding(*args, **kwargs):
+        return {"predicted_amount": None, "confidence": 0.0, "error": "model_clients.py not found"}
+    
 # Import your existing Ollama functions
 # Make sure ollama_client.py is in the same folder
 try:
@@ -152,12 +160,15 @@ async def analyze_startup(input_data: StartupInput):
             "avg_funding_str": f"${avg_funding:,.0f}" if funded_count > 0 else "N/A"
         }
         
-        # --- (PLACEHOLDER) ---
-        # As you requested, here is the spot to add your joblib model call.
-        # You would load your joblib file at startup, just like the other models.
-        # e.g., predicted_value = my_joblib_model.predict([[input_data.user_idea, ...]])
-        extra_prediction = "Your .joblib model prediction will go here."
-        # --- (END PLACEHOLDER) ---
+        print("Predicting funding...")
+        funding_prediction_result = predict_funding(
+            description=input_data.user_idea,
+            industry=predicted_industry,  # Use the industry we just predicted
+            city=input_data.user_city,
+            founding_year=input_data.founding_year
+        )
+        print(f"Funding prediction result: {funding_prediction_result}")
+        # --- (END PLACEHOLDER REPLACEMENT) ---
 
         # --- G. Format and Return Results ---
         return {
@@ -167,9 +178,13 @@ async def analyze_startup(input_data: StartupInput):
                 "founding_year": input_data.founding_year
             },
             "ai_analysis": ai_analysis_result,
-            "similar_startups": results_df.to_dict('records'), # Convert dataframe to list of dicts
+            "similar_startups": results_df.to_dict('records'),
             "funding_analysis": funding_analysis_result,
-            "extra_prediction": extra_prediction
+            
+            # --- MODIFIED LINE ---
+            # "extra_prediction": extra_prediction  <-- DELETE THIS LINE
+            "funding_prediction": funding_prediction_result # <-- ADD THIS LINE
+            # --- END MODIFIED LINE ---
         }
 
     except Exception as e:

@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const aiAnalysisSection = document.getElementById("ai-analysis-section");
   const similarStartupsSection = document.getElementById("similar-startups-section");
   const fundingAnalysisSection = document.getElementById("funding-analysis-section");
-  const extraPredictionSection = document.getElementById("extra-prediction-section");
+  const fundingPredictionSection = document.getElementById("funding-prediction-section");
 
   // --- 2. Set default founding year ---
   foundingYearInput.value = new Date().getFullYear();
@@ -171,12 +171,49 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
     // 5. Extra Prediction (Your Joblib placeholder)
-    extraPredictionSection.innerHTML = `
-      <div class="metric">
-        <span class="metric-label">Custom Model Prediction</span>
-        <span class="metric-value">${data.extra_prediction}</span>
-      </div>
-    `;
+    const fundingPred = data.funding_prediction;
+    
+    // Clear previous results
+    fundingPredictionSection.innerHTML = ''; 
+
+    if (fundingPred.error) {
+      // If the model returned an error
+      fundingPredictionSection.innerHTML = `
+        <div class="metric">
+          <span class="metric-label">Prediction Status</span>
+          <span class="metric-value" style="color: #ff5c5c;">Error</span>
+          <span class="metric-delta">${fundingPred.error}</span>
+        </div>
+      `;
+    } else {
+      // Format the numbers as currency
+      const currencyFormat = (num) => new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+        maximumFractionDigits: 0
+      }).format(num);
+
+      // Create the main prediction metric
+      fundingPredictionSection.innerHTML += `
+        <div class="metric">
+          <span class="metric-label">Predicted Funding</span>
+          <span class="metric-value">${currencyFormat(fundingPred.predicted_amount)}</span>
+          <span class="metric-delta">Confidence: ${(fundingPred.confidence * 100).toFixed(0)}%</span>
+        </div>
+      `;
+
+      // If your model returned a confidence interval, display it
+      if (fundingPred.lower !== undefined && fundingPred.upper !== undefined) {
+        fundingPredictionSection.innerHTML += `
+          <div class="metric">
+            <span class="metric-label">95% Confidence Range</span>
+            <span class="metric-value" style="font-size: 1.2rem;">
+              ${currencyFormat(fundingPred.lower)} - ${currencyFormat(fundingPred.upper)}
+            </span>
+          </div>
+        `;
+      }
+    }
 
     // Finally, show the whole results section
     resultsSection.classList.remove("hidden");
