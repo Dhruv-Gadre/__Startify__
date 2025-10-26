@@ -2,25 +2,24 @@
 
 > Startify helps founders quickly evaluate startup ideas using similarity search, an LLM-powered "copycat" analysis, and a funding-prediction model. It includes a Streamlit prototype UI, a FastAPI backend used by a static web front-end, and training scripts to build a funding model from sample startup data.
 
-## What this repository contains
+![landing page](https://github.com/user-attachments/assets/09ab3db0-cd7d-4fe4-82f9-c6cb2fb52fdd)
 
-- `app.py` — Streamlit demo app (interactive local UI).
-- `main.py` — FastAPI backend that exposes a POST `/analyze` endpoint used by the web UI.
-- `index.html`, `evaluate.html`, `script.js`, `styles.css` — simple static website that calls the FastAPI backend.
-- `model_client.py` — runtime wrapper that loads saved funding prediction models and returns structured predictions.
-- `model_parts.py` — feature builder and ensemble estimator used during model training.
-- `train_funding_model.py` — training script that produces a pipeline saved under `models/`.
-- `ollama_client.py` — helper that queries a local Ollama LLM to perform similarity / "copycat" analysis.
-- `Startups1.csv`, `startup_funding.csv`, `startup_failure_prediction.csv` — sample data files used by the app and training scripts.
-- `smoke_predict.py` — tiny smoke test script that calls `model_client.predict_funding` on sample ideas.
-- `requirements.txt` — Python dependencies for the project.
 
 ## High-level flow
 
 1. A user submits a startup idea.
+![1](https://github.com/user-attachments/assets/d28836a5-1bae-43ff-b763-1fc95a45f52f)
+
 2. The system finds the top-k most similar startups using SentenceTransformers + FAISS.
+![2](https://github.com/user-attachments/assets/f31d2ef6-dae4-4f71-83ad-0ec84c5a1ae8)
+
+
 3. The top match is analyzed using a local LLM (Ollama) to produce a similarity score and a simple "is_copy" verdict.
+![3](https://github.com/user-attachments/assets/34912487-8db4-4577-8f64-8ba7f1e6fc3f)
+
+
 4. A funding model returns a predicted funding amount and optional uncertainty interval.
+![4](https://github.com/user-attachments/assets/4b11282b-a065-4b02-8004-06c2dcaffd90)
 
 ## Quickstart (local, development)
 
@@ -37,9 +36,6 @@ python -m venv .venv; .\.venv\Scripts\Activate.ps1
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
-
-Notes on `faiss-cpu` and SentenceTransformers:
-- `faiss-cpu` is listed in `requirements.txt`. On some Windows environments installing `faiss-cpu` via pip can be tricky — if you hit wheel/platform issues, use conda or follow the FAISS installation instructions for Windows.
 
 Running the Streamlit demo UI
 
