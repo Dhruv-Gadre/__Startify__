@@ -168,9 +168,6 @@ async def analyze_startup(input_data: StartupInput):
             founding_year=input_data.founding_year
         )
         print(f"Funding prediction result: {funding_prediction_result}")
-        # --- (END PLACEHOLDER REPLACEMENT) ---
-
-        # --- G. Format and Return Results ---
         return {
             "profile": {
                 "predicted_industry": predicted_industry,
@@ -181,17 +178,13 @@ async def analyze_startup(input_data: StartupInput):
             "similar_startups": results_df.to_dict('records'),
             "funding_analysis": funding_analysis_result,
             
-            # --- MODIFIED LINE ---
-            # "extra_prediction": extra_prediction  <-- DELETE THIS LINE
-            "funding_prediction": funding_prediction_result # <-- ADD THIS LINE
-            # --- END MODIFIED LINE ---
+            "funding_prediction": funding_prediction_result
         }
 
     except Exception as e:
         logging.error(f"Error during analysis: {e}")
         raise HTTPException(status_code=500, detail=f"An internal error occurred: {str(e)}")
 
-# --- 5. Run the Server ---
 if __name__ == "__main__":
     print("Starting FastAPI server on http://127.0.0.1:8000")
     uvicorn.run(app, host="127.0.0.1", port=8000)
